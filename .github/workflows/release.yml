@@ -46,10 +46,20 @@ jobs:
       - name: Archive release
         run: zip -r lexical-${{ github.sha }}.zip _build/prod/rel/lexical
 
+      - name: Create Git tag for commit
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/${{ github.sha }}",
+              sha: context.sha
+            })
+
       - name: Publish release
         uses: ncipollo/release-action@v1
         with:
           artifacts: lexical-${{ github.sha }}.zip
-          commit: ${{ github.sha }}
           tag: ${{ github.sha }}
           makeLatest: true
