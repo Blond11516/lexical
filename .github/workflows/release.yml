@@ -44,11 +44,11 @@ jobs:
         run: mix release lexical
 
       - name: Archive release
-        run: zip -r lexical-$GITHUB_SHA.zip _build/prod/rel/lexical
+        run: zip -r lexical-${{ github.sha }}.zip _build/prod/rel/lexical
 
       - name: Publish release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: lexical-$GITHUB_SHA.zip
-          commit: $GITHUB_SHA
+          artifacts: lexical-${{ github.sha }}.zip
+          commit: ${{ github.sha }}
           makeLatest: true
