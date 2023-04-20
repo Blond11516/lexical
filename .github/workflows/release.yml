@@ -50,4 +50,5 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: lexical-$GITHUB_SHA.zip
+          commit: $GITHUB_SHA
           makeLatest: true
