@@ -1,0 +1,53 @@
+name: Release Lexical
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+env:
+  MIX_ENV: prod
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    name: Build and release Lexical
+    steps:
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: "25.2.1"
+          elixir-version: "1.14.3-otp-25"
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Cache deps
+        id: cache-deps
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-elixir-deps
+        with:
+          path: deps
+          key: ${{ runner.os }}-mix-${{ env.cache-name }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-${{ env.cache-name }}-
+
+      - name: Install dependencies
+        run: mix deps.get
+
+      - name: Compile
+        run: mix compile
+
+      - name: Build release
+        run: mix release lexical
+
+      - name: Archive release
+        run: zip -r lexical-$GITHUB_SHA.zip _build/prod/rel/lexical
+
+      - name: Publish release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: lexical-$GITHUB_SHA.zip
+          makeLatest: true
