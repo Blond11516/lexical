@@ -54,10 +54,11 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
+            const shortSha = "${{ env.COMMIT_SHA }}".slice(0, 7)
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: "refs/tags/${{ env.COMMIT_SHA }}",
+              ref: `refs/tags/${shortSha}`,
               sha: context.sha
             })
 
