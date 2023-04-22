@@ -47,24 +47,30 @@ jobs:
       - name: Build release
         run: mix release lexical
 
+      - name: Generate short sha
+        id: short-sha
+        uses: actions/github-script@v6
+        with:
+          script: return "${{ env.COMMIT_SHA }}".slice(0, 7)
+          result-encoding: string
+
       - name: Archive release
-        run: zip -r lexical-${{ env.COMMIT_SHA }}.zip _build/prod/rel/lexical
+        run: zip -r lexical-${{ steps.short-sha.outputs.result }}.zip _build/prod/rel/lexical
 
       - name: Create Git tag for commit
         uses: actions/github-script@v6
         with:
           script: |
-            const shortSha = "${{ env.COMMIT_SHA }}".slice(0, 7)
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: `refs/tags/${shortSha}`,
+              ref: "refs/tags/${{ steps.short-sha.outputs.result }}",
               sha: context.sha
             })
 
       - name: Publish release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: lexical-${{ env.COMMIT_SHA }}.zip
-          tag: ${{ env.COMMIT_SHA }}
+          artifacts: lexical-${{ steps.short-sha.outputs.result }}.zip
+          tag: ${{ steps.short-sha.outputs.result }}
           makeLatest: true
