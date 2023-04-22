@@ -3,8 +3,6 @@ name: Release Lexical
 on:
   push:
     branches: ["main"]
-  pull_request:
-    branches: ["main"]
 
 env:
   MIX_ENV: prod
