@@ -4,9 +4,6 @@ on:
   push:
     branches: ["main"]
 
-env:
-  MIX_ENV: prod
-
 jobs:
   release:
     runs-on: ubuntu-latest
