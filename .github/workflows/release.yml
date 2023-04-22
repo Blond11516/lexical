@@ -55,7 +55,9 @@ jobs:
           result-encoding: string
 
       - name: Archive release
-        run: zip -r lexical-${{ steps.short-sha.outputs.result }}.zip _build/prod/rel/lexical
+        run: |
+          zip -r lexical.zip _build/prod/rel/lexical
+          cp lexical.zip lexical-${{ steps.short-sha.outputs.result }}.zip
 
       - name: Create Git tag for commit
         uses: actions/github-script@v6
@@ -71,6 +73,6 @@ jobs:
       - name: Publish release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: lexical-${{ steps.short-sha.outputs.result }}.zip
+          artifacts: lexical*.zip
           tag: ${{ steps.short-sha.outputs.result }}
           makeLatest: true
