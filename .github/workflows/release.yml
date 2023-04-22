@@ -3,6 +3,8 @@ name: Release Lexical
 on:
   push:
     branches: ["main"]
+  pull_request:
+    branches: ["main"]
 
 env:
   MIX_ENV: prod
@@ -11,6 +13,8 @@ jobs:
   release:
     runs-on: ubuntu-latest
     name: Build and release Lexical
+    env:
+      COMMIT_SHA: "5ff7752d7c2917fc855242554a1f76a2e54a85a2"
     steps:
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
@@ -42,7 +46,7 @@ jobs:
         run: mix release lexical
 
       - name: Archive release
-        run: zip -r lexical-${{ github.sha }}.zip _build/prod/rel/lexical
+        run: zip -r lexical-${{ env.COMMIT_SHA }}.zip _build/prod/rel/lexical
 
       - name: Create Git tag for commit
         uses: actions/github-script@v6
@@ -51,13 +55,13 @@ jobs:
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: "refs/tags/${{ github.sha }}",
+              ref: "refs/tags/${{ env.COMMIT_SHA }}",
               sha: context.sha
             })
 
       - name: Publish release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: lexical-${{ github.sha }}.zip
-          tag: ${{ github.sha }}
+          artifacts: lexical-${{ env.COMMIT_SHA }}.zip
+          tag: ${{ env.COMMIT_SHA }}
           makeLatest: true
