@@ -49,7 +49,7 @@ jobs:
         id: short-sha
         uses: actions/github-script@v6
         with:
-          script: return "${{ env.COMMIT_SHA }}".slice(0, 7)
+          script: return "${{ github.sha }}".slice(0, 7)
           result-encoding: string
 
       - name: Archive release
