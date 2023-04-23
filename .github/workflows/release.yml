@@ -49,7 +49,7 @@ jobs:
 
       - name: Archive release
         run: |
-          zip -r lexical.zip _build/prod/rel/lexical
+          zip -r lexical.zip _build/dev/rel/lexical
           cp lexical.zip lexical-${{ steps.short-sha.outputs.result }}.zip
 
       - name: Create Git tag for commit
