@@ -38,7 +38,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 PATH_APPEND_ARGS=$(for f in $(find ${SCRIPT_DIR}/../lib -name '*.ez')
 do
     lib=$(basename $f | sed -e 's/.ez//g')
-    echo "-pa $f/$lib/ebin"
+    ech "-pa $f/$lib/ebin"
 done)
 
 "${ELIXIR_COMMAND}" $(echo $PATH_APPEND_ARGS) \
